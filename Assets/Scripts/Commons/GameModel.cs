@@ -14,11 +14,17 @@ public class GameModel
     [Serializable]
     public class GameSession
     {
+        public string gameSessionId;
         public List<PlayerObject> playerObjects;
+        public int chaserId;
+        public int roundId;
 
-        public GameSession(List<PlayerObject> playerObjects)
+        public GameSession(string gameSessionId, List<PlayerObject> playerObjects, int chaserId, int roundId)
         {
+            this.gameSessionId = gameSessionId;
             this.playerObjects = playerObjects;
+            this.chaserId = chaserId;
+            this.roundId = roundId;
         }
     }
 
@@ -30,6 +36,7 @@ public class GameModel
         public float x;
         public float y;
         public bool connected;
+        public int score;
 
         public PlayerObject(int clientId, string username, float x, float y, bool connected)
         {
@@ -38,6 +45,15 @@ public class GameModel
             this.x = x;
             this.y = y;
             this.connected = connected;
+        }
+        public PlayerObject(int clientId, string username, float x, float y, bool connected, int score)
+        {
+            this.clientId = clientId;
+            this.username = username;
+            this.x = x;
+            this.y = y;
+            this.connected = connected;
+            this.score = score;
         }
     }
 
@@ -80,23 +96,24 @@ public class GameModel
     [Serializable]
     public class PlayerCatch
     {
-        public int clientId;
         public int chaserId;
-        public List<int> playerIdList;
-        public int nextChaserId;
+        public List<int> catchedIdList;
 
-        public PlayerCatch(int clientId, int chaserId, List<int> playerIdList)
+        public PlayerCatch(int chaserId, List<int> catchedIdList)
         {
-            this.clientId = clientId;
             this.chaserId = chaserId;
-            this.playerIdList = playerIdList;
+            this.catchedIdList = catchedIdList;
         }
-        public PlayerCatch(int clientId, int chaserId, List<int> playerIdList, int nextChaserId)
+    }
+
+    [Serializable]
+    public class GameOver
+    {
+        public GameSession gameSession;
+
+        public GameOver(GameSession gameSession)
         {
-            this.clientId = clientId;
-            this.chaserId = chaserId;
-            this.playerIdList = playerIdList;
-            this.nextChaserId = nextChaserId;
+            this.gameSession = gameSession;
         }
     }
 
