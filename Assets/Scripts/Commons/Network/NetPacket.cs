@@ -10,7 +10,8 @@ public enum PacketType
     PLAYER_INIT,        //Client -> Server
     PLAYER_MOVEMENT,
     PLAYER_CATCH,
-    GAME_OVER
+    GAME_OVER,
+    DUMMY_PLAY          //Temporary Packet for testing
 }
 
 /***

@@ -35,10 +35,6 @@ public class NetPlayer : MonoBehaviour
         StartCoroutine(WaitForMovementAfterCollision());
     }
 
-    private void OnCollisionStay(Collision other)
-    {
-    }
-
     private void OnCollisionExit(Collision other)
     {
         isCollided = false;
@@ -65,10 +61,6 @@ public class NetPlayer : MonoBehaviour
                 Debug.Log("Player Trigger Enter. targetId=" + other.gameObject.GetComponent<NetPlayer>().clientId);
             }
         }
-        else if (other.gameObject.tag == "Dummy")
-        {
-
-        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -80,10 +72,6 @@ public class NetPlayer : MonoBehaviour
             {
                 catchingSet.Remove(targetId);
             }
-        }
-        else if (other.gameObject.tag == "Dummy")
-        {
-
         }
 
     }
@@ -99,7 +87,14 @@ public class NetPlayer : MonoBehaviour
     {
         if (ServerManager.Singleton.serverPlayService.isGameStarted)
         {
-            SimulateMovement();
+            if (ServerManager.Singleton.serverPlayService.IsPlayerDummy(this.clientId))
+            {
+                SimulateDummyMovement();
+            }
+            else
+            {
+                SimulatePlayerMovement();
+            }
 
             if (isChaser)
             {
@@ -113,7 +108,7 @@ public class NetPlayer : MonoBehaviour
         this.playerInput = controlObject;
     }
 
-    private void SimulateMovement()
+    private void SimulatePlayerMovement()
     {
         if (playerInput != null)
         {
@@ -149,10 +144,49 @@ public class NetPlayer : MonoBehaviour
             //Debug.Log("[NetPlayer] Player[" + clientId + "] SImulate Movement pos: " + this.transform.position);
 
             ServerManager.Singleton.serverPlayService.BroadcastPlayerMovement(new GameModel.PlayerMovement(this.clientId, this.transform.position.x, this.transform.position.y));
-
-            //FIXME: Fix this to handle it through Queue
             this.playerInput = null;
         }
+    }
+
+    /***
+     * 
+     * 
+     * SimulateDummyMovement -> MessageQueue -> ServerPlayService.OnPlayerMoved -> SimulatePlayerMovement()
+     * 
+     */
+    public void SimulateDummyMovement()
+    {
+        bool up = GameMath.GetRandomInt(0, 10) % 2 == 0;
+        bool down = GameMath.GetRandomInt(0, 10) % 2 == 0;
+        bool left = GameMath.GetRandomInt(0, 10) % 2 == 0;
+        bool right = GameMath.GetRandomInt(0, 10) % 2 == 0;
+
+
+        float horizontal = 0.0f;
+        float vertical = 0.0f;
+
+        if (up && transform.position.y <= InterfaceManager.Singleton.upBoundary)
+        {
+            vertical += 2.0f;
+        }
+        if (down && transform.position.y >= InterfaceManager.Singleton.downBoundary)
+        {
+            vertical -= 2.0f;
+        }
+        if (left && transform.position.x >= InterfaceManager.Singleton.leftBoundary)
+        {
+            horizontal -= 2.0f;
+        }
+        if (right && transform.position.x <= InterfaceManager.Singleton.rightBoundary)
+        {
+            horizontal += 2.0f;
+        }
+
+        Vector2 Move = new Vector2(horizontal, vertical);
+        Move *= speed * Time.deltaTime;
+        this.transform.Translate(Move);
+
+        ServerManager.Singleton.serverPlayService.BroadcastPlayerMovement(new GameModel.PlayerMovement(this.clientId, this.transform.position.x, this.transform.position.y));
     }
 
     /**

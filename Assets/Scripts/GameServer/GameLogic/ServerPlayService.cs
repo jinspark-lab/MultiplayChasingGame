@@ -19,6 +19,8 @@ public class ServerPlayService
     public int playerMaxScore;
     public int roundNo;
 
+    private const int dummyId = 1001;
+
     public ServerPlayService()
     {
         // Initialize objects
@@ -33,6 +35,16 @@ public class ServerPlayService
         roundNo = 0;
     }
 
+    public bool IsPlayerDummy(int clientId)
+    {
+        return clientId == dummyId;
+    }
+
+    public bool IsPlayerExist(int clientId)
+    {
+        return playerPool.ContainsKey(clientId);
+    }
+
     /***
      *  Initialize Player Session
      */
@@ -41,6 +53,14 @@ public class ServerPlayService
         if (!playerPool.ContainsKey(clientId))
         {
             SpawnPlayer(clientId);
+        }
+    }
+
+    public void InitDummySession()
+    {
+        if (!playerPool.ContainsKey(dummyId))
+        {
+            SpawnPlayer(dummyId);
         }
     }
 

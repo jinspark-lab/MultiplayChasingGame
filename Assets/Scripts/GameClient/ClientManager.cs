@@ -17,8 +17,6 @@ public class ClientManager : MonoBehaviour
 
     public GameObject playerPrefab;
     public GameObject chaserPrefab;
-    //public Dictionary<int, GameObject> players;
-    //private Dictionary<int, string> usernames;
 
     public ClientSessionService clientSessionService;
     public ClientPlayService clientPlayService;
@@ -71,7 +69,8 @@ public class ClientManager : MonoBehaviour
         }
         else if (InputManager.Singleton.GetInputKeyDown(KeyCode.F3))
         {
-
+            // Play With Dummy. Server makes dummy
+            SendDummyRequest();
         }
     }
 
@@ -130,6 +129,11 @@ public class ClientManager : MonoBehaviour
     public void SendClientPacket(long packetId, PacketType packetType, string json)
     {
         clientSessionService.GetNetClient().SendData(packetId, packetType, json);
+    }
+
+    public void SendDummyRequest()
+    {
+        SendClientPacket(NetPacket.GeneratePacketIdTimestamp(), PacketType.DUMMY_PLAY, "");
     }
 
     public void OnApplicationQuit()

@@ -53,4 +53,8 @@ public class NetServerHandle
         netServer.netMessageQueue.PushMessage(new NetMessage(clientId, packetId, packetType, message));
     }
 
+    public void DummyPlayHandler(int clientId, long packetId, PacketType packetType, string message)
+    {
+        netServer.netMessageQueue.PushMessage(new NetMessage(clientId, packetId, packetType, message));
+    }
 }

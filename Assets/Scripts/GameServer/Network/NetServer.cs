@@ -72,7 +72,8 @@ public class NetServer
             { (int)PacketType.DISCONNECT, netServerHandle.DisconnectHandler },
             { (int)PacketType.PLAYER_INIT, netServerHandle.PlayerInitHandler },
             { (int)PacketType.PLAYER_MOVEMENT, netServerHandle.PlayerMovementHandler },
-            { (int)PacketType.PLAYER_CATCH, netServerHandle.PlayerCatchHandler }
+            { (int)PacketType.PLAYER_CATCH, netServerHandle.PlayerCatchHandler },
+            { (int)PacketType.DUMMY_PLAY, netServerHandle.DummyPlayHandler }
         };
     }
 
