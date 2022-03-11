@@ -22,6 +22,8 @@ public class ClientManager : MonoBehaviour
     public ClientPlayService clientPlayService;
     public GameUIService gameUIService;
 
+    private WebSocketClient webSocketClient;
+
     private void Awake()
     {
         if (Singleton != null)
@@ -72,7 +74,21 @@ public class ClientManager : MonoBehaviour
             // Play With Dummy. Server makes dummy
             SendDummyRequest();
         }
+        else if (InputManager.Singleton.GetInputKeyDown(KeyCode.F4))
+        {
+            Debug.Log("WebSocket Try");
+            webSocketClient = new WebSocketClient("localhost", 3000);
+        }
+        else if (InputManager.Singleton.GetInputKeyDown(KeyCode.F5))
+        {
+            webSocketClient.SendWebSocketMessage();
+        }
+        else if (InputManager.Singleton.GetInputKeyDown(KeyCode.F6))
+        {
+            webSocketClient.DisconnectWebSocket();
+        }
     }
+
 
     private void MessageLoop()
     {
